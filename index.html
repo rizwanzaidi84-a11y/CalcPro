@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalcPro</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #111827;
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator {
+            width: 350px;
+            padding: 20px;
+            background: #1f2937;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .title {
+            color: white;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        #display {
+            width: 100%;
+            height: 70px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #000000;
+            color: white;
+            font-size: 28px;
+            text-align: right;
+            outline: none;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            height: 58px;
+            border: none;
+            border-radius: 10px;
+            background: #374151;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .operator {
+            background: #2563eb;
+        }
+
+        .clear {
+            background: #dc2626;
+        }
+
+        .equals {
+            background: #16a34a;
+        }
+
+        .scientific {
+            background: #7c3aed;
+            font-size: 16px;
+        }
+
+        .history {
+            margin-top: 15px;
+            padding: 10px;
+            background: #111827;
+            border-radius: 10px;
+            color: white;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .history-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .history-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #374151;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator">
+
+        <div class="title">CalcPro</div>
+
+        <input
+            type="text"
+            id="display"
+            readonly
+        >
+
+        <div class="buttons">
+
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button onclick="backspace()">⌫</button>
+            <button onclick="percentage()">%</button>
+            <button class="operator" onclick="addValue('/')">÷</button>
+
+            <button onclick="addValue('7')">7</button>
+            <button onclick="addValue('8')">8</button>
+            <button onclick="addValue('9')">9</button>
+            <button class="operator" onclick="addValue('*')">×</button>
+
+            <button onclick="addValue('4')">4</button>
+            <button onclick="addValue('5')">5</button>
+            <button onclick="addValue('6')">6</button>
+            <button class="operator" onclick="addValue('-')">−</button>
+
+            <button onclick="addValue('1')">1</button>
+            <button onclick="addValue('2')">2</button>
+            <button onclick="addValue('3')">3</button>
+            <button class="operator" onclick="addValue('+')">+</button>
+
+            <button onclick="addValue('0')">0</button>
+            <button onclick="addValue('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+            <button onclick="addValue('(')">(</button>
+
+            <button class="scientific" onclick="square()">x²</button>
+            <button class="scientific" onclick="squareRoot()">√</button>
+            <button class="scientific" onclick="reciprocal()">1/x</button>
+            <button class="scientific" onclick="addPi()">π</button>
+
+            <button class="scientific" onclick="sinFunction()">sin</button>
+            <button class="scientific" onclick="cosFunction()">cos</button>
+            <button class="scientific" onclick="tanFunction()">tan</button>
+            <button class="scientific" onclick="logFunction()">log</button>
+
+            <button class="scientific" onclick="addValue(')')">)</button>
+            <button class="scientific" onclick="power()">xʸ</button>
+            <button class="scientific" onclick="factorial()">n!</button>
+            <button class="scientific" onclick="changeSign()">±</button>
+
+        </div>
+
+        <div class="history">
+            <div class="history-title">History</div>
+            <div id="historyList">No calculations yet</div>
+        </div>
+
+    </div>
+
+    <script>
+
+        const display = document.getElementById("display");
+        const historyList = document.getElementById("historyList");
+
+        function addValue(value) {
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            display.value = "";
+        }
+
+        function backspace() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        function calculate() {
+
+            if (display.value === "") {
+                return;
+            }
+
+            try {
+
+                const expression = display.value;
+                const result = eval(expression);
+
+                if (!Number.isFinite(result)) {
+                    throw new Error();
+                }
+
+                display.value = result;
+
+                addHistory(expression + " = " + result);
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function percentage() {
+
+            try {
+
+                const result = eval(display.value) / 100;
+
+                display.value = result;
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function square() {
+
+            try {
+
+                const number = eval(display.value);
+
+                display.value = number * number;
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function squareRoot() {
+
+            try {
+
+                const number = eval(display.value);
+
+                if (number < 0) {
+                    throw new Error();
+                }
+
+                display.value = Math.sqrt(number);
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function reciprocal() {
+
+            try {
+
+                const number = eval(display.value);
+
+                if (number === 0) {
+                    throw new Error();
+                }
+
+                display.value = 1 / number;
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function addPi() {
+            display.value += Math.PI;
+        }
+
+        function sinFunction() {
+
+            try {
+
+                const number = eval(display.value);
+
+                display.value =
+                    Math.sin(number * Math.PI / 180);
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function cosFunction() {
+
+            try {
+
+                const number = eval(display.value);
+
+                display.value =
+                    Math.cos(number * Math.PI / 180);
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function tanFunction() {
+
+            try {
+
+                const number = eval(display.value);
+
+                display.value =
+                    Math.tan(number * Math.PI / 180);
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function logFunction() {
+
+            try {
+
+                const number = eval(display.value);
+
+                if (number <= 0) {
+                    throw new Error();
+                }
+
+                display.value = Math.log10(number);
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function power() {
+            display.value += "**";
+        }
+
+        function factorial() {
+
+            try {
+
+                const number = eval(display.value);
+
+                if (
+                    number < 0 ||
+                    !Number.isInteger(number)
+                ) {
+                    throw new Error();
+                }
+
+                let result = 1;
+
+                for (let i = 2; i <= number; i++) {
+                    result *= i;
+                }
+
+                display.value = result;
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function changeSign() {
+
+            try {
+
+                const number = eval(display.value);
+
+                display.value = -number;
+
+            } catch (error) {
+
+                display.value = "Error";
+
+            }
+        }
+
+        function addHistory(text) {
+
+            if (historyList.textContent === "No calculations yet") {
+                historyList.innerHTML = "";
+            }
+
+            const item = document.createElement("div");
+
+            item.className = "history-item";
+            item.textContent = text;
+
+            historyList.prepend(item);
+        }
+
+        document.addEventListener("keydown", function(event) {
+
+            const key = event.key;
+
+            if (
+                (key >= "0" && key <= "9") ||
+                key === "+" ||
+                key === "-" ||
+                key === "*" ||
+                key === "/" ||
+                key === "." ||
+                key === "(" ||
+                key === ")"
+            ) {
+                addValue(key);
+            }
+
+            else if (key === "Enter") {
+                calculate();
+            }
+
+            else if (key === "Backspace") {
+                backspace();
+            }
+
+            else if (key === "Escape") {
+                clearDisplay();
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
